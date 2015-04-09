@@ -82,7 +82,6 @@ function Strategy(options, verify) {
                         return verified(new Error('Authentication failed'));
 
                     } catch (e) {
-                        console.log(e);
                         return verified(new Error('Authentication failed '));
                     }
                 });
@@ -103,6 +102,7 @@ Strategy.prototype.service = function(req) {
 };
 
 Strategy.prototype.authenticate = function (req, options) {
+
     options = options || {};
 
     // CAS Logout flow as described in
@@ -118,6 +118,7 @@ Strategy.prototype.authenticate = function (req, options) {
     var service = this.service(req);
 
     var ticket = req.param('ticket');
+
     if (!ticket) {
         var redirectURL = url.parse(this.ssoBase + '/login', true);
 
@@ -139,7 +140,9 @@ Strategy.prototype.authenticate = function (req, options) {
         if (!user) {
             return self.fail(info);
         }
-        self.success(user, info);
+        var parsedUrl = url.parse(service, true);
+        var next = parsedUrl.query.next + '?accessToken=' + info.accessToken.id;
+        return self.redirect(url.format(next));
     };
     var _validateUri = this.validateURL || this._validateUri;
     var get = this.client.get({
