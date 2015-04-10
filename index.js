@@ -45,10 +45,15 @@ function Strategy(options, verify) {
                     if (lines[0] === 'no') {
                         return verified(new Error('Authentication failed'));
                     } else if (lines[0] === 'yes' && lines.length >= 2) {
+                        var profile = {};
+                        var options = {
+                            autoLogin: true
+                        };
+                        var credentials = {};
                         if (self._passReqToCallback) {
-                            self._verify(req, lines[1], verified);
+                            self._verify(req, lines[1], profile, options, credentials, verified);
                         } else {
-                            self._verify(lines[1], verified);
+                            self._verify(lines[1], profile, options, credentials, verified);
                         }
                         return;
                     }
