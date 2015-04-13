@@ -147,6 +147,9 @@ Strategy.prototype.authenticate = function (req, options) {
         }
         var parsedUrl = url.parse(service, true);
         var next = parsedUrl.query.next + '?accessToken=' + info.accessToken.id;
+        if(parsedUrl.query.hash) {
+            next = next + '&hash=' + parsedUrl.query.hash;
+        }
         return self.redirect(url.format(next));
     };
     var _validateUri = this.validateURL || this._validateUri;
